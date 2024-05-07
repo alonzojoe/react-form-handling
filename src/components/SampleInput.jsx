@@ -27,6 +27,14 @@ const SimpleInput = (props) => {
     ? "form-control invalid"
     : "form-control";
 
+  const blurHandler = (e) => {
+    setInputTouch(true);
+    if (enteredName.trim().length === 0) {
+      setIsValid(false);
+      return;
+    }
+  };
+
   return (
     <form onSubmit={submitHandler}>
       <div className={inputClasses}>
@@ -44,6 +52,7 @@ const SimpleInput = (props) => {
           style={{ borderColor: enteredNameValid ? "red" : "" }}
           value={enteredName}
           onChange={changeHandler}
+          onBlur={blurHandler}
         />
         {enteredNameValid && (
           <p className="error-text" style={{ textAlign: "left" }}>
