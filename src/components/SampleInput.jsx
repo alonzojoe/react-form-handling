@@ -1,38 +1,34 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [isValid, setIsValid] = useState(false);
   const [inputTouch, setInputTouch] = useState(false);
 
+  const isValid = enteredName.trim() !== "";
+  const enteredNameValid = !isValid && inputTouch;
+
   const changeHandler = (e) => {
-    setEnteredName(e.target.value);
+    const { value } = e.target;
+    setEnteredName(value);
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
     setInputTouch(true);
-    if (enteredName.trim().length === 0) {
-      setIsValid(false);
-      return;
-    }
-    setIsValid(true);
+
+    if (!enteredName) return;
+
     console.log(enteredName);
     setEnteredName("");
+    setInputTouch(false);
   };
-
-  const enteredNameValid = !isValid && inputTouch;
 
   const inputClasses = enteredNameValid
     ? "form-control invalid"
     : "form-control";
 
-  const blurHandler = (e) => {
+  const blurHandler = () => {
     setInputTouch(true);
-    if (enteredName.trim().length === 0) {
-      setIsValid(false);
-      return;
-    }
   };
 
   return (
