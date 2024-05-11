@@ -1,44 +1,41 @@
 import { useState, useEffect } from "react";
+import useInput from "../hooks/use-input";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [inputTouch, setInputTouch] = useState(false);
+  const {
+    value: enteredName,
+    isValid,
+    hasError,
+    changeHandler,
+    blurHandler,
+    reset,
+  } = useInput((value) => value.trim() !== "");
 
-
-  const isValid = enteredName.trim() !== "";
-  const enteredNameValid = !isValid && inputTouch;
+  const {
+    value: enteredEmail,
+    isValid: enteredEmailIsValid,
+    hasError: emailHasError,
+    changeHandler: emailChangeHandler,
+    blurHandler: emailBlurHandler,
+    reset: resetEmail,
+  } = useInput((value) => value.includes("@"));
 
   let formIsvalid = false;
 
-  if (isValid) {
+  if (isValid && enteredEmailIsValid) {
     formIsvalid = true;
-  } else {
-    formIsvalid = false;
   }
-
-  const changeHandler = (e) => {
-    const { value } = e.target;
-    setEnteredName(value);
-  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    setInputTouch(true);
 
-    if (!enteredName) return;
-
-    console.log(enteredName);
-    setEnteredName("");
-    setInputTouch(false);
+    if (!isValid && !enteredEmailIsValid) return;
+    reset();
+    resetEmail();
   };
 
-  const inputClasses = enteredNameValid
-    ? "form-control invalid"
-    : "form-control";
-
-  const blurHandler = () => {
-    setInputTouch(true);
-  };
+  const inputClasses = hasError ? "form-control invalid" : "form-control";
+  const emailClasses = emailHasError ? "form-control invalid" : "form-control";
 
   return (
     <form onSubmit={submitHandler}>
@@ -46,7 +43,7 @@ const SimpleInput = (props) => {
         <label
           htmlFor="name"
           style={{
-            color: enteredNameValid ? "red" : "",
+            color: hasError ? "red" : "",
           }}
         >
           Your Name:
@@ -54,14 +51,37 @@ const SimpleInput = (props) => {
         <input
           type="text"
           id="name"
-          style={{ borderColor: enteredNameValid ? "red" : "" }}
+          style={{ borderColor: hasError ? "red" : "" }}
           value={enteredName}
           onChange={changeHandler}
           onBlur={blurHandler}
         />
-        {enteredNameValid && (
+        {hasError && (
           <p className="error-text" style={{ textAlign: "left" }}>
             Field Required: Name
+          </p>
+        )}
+      </div>
+      <div className={emailClasses}>
+        <label
+          htmlFor="email"
+          style={{
+            color: emailHasError ? "red" : "",
+          }}
+        >
+          Your Email:
+        </label>
+        <input
+          type="email"
+          id="email"
+          style={{ borderColor: emailHasError ? "red" : "" }}
+          value={enteredEmail}
+          onChange={emailChangeHandler}
+          onBlur={emailBlurHandler}
+        />
+        {emailHasError && (
+          <p className="error-text" style={{ textAlign: "left" }}>
+            Invalid Field: Email
           </p>
         )}
       </div>
