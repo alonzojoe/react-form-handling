@@ -33,12 +33,16 @@ const BasicForm = (props) => {
   } = useInput(isEmail);
 
   const submitHandler = (e) => {
-    e.preventDefault;
+    e.preventDefault();
     if (!firstNameIsValid || !lastNameIsValid || !emailIsValid) return;
+
+    console.log("form is submitted");
+    console.log("output :", firstNamevalue, lastNameValue, emailValue);
 
     resetFirstName();
     resetLastName();
     resetEmail();
+    console.log("form is clear");
   };
 
   let formValid = false;
